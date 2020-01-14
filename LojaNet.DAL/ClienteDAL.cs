@@ -5,6 +5,7 @@ using LojaNet.Models;
 
 namespace LojaNet.DAL
 {
+    //Data Access Layer
     public class ClienteDAL : IClienteDados
     {
         public void Alterar(Cliente cliente)
