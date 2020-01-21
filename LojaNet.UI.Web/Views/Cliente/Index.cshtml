@@ -19,7 +19,10 @@
     @foreach(var cliente in Model)
     {
         <tr>
-            <td>@cliente.Nome</td>
+            <td>
+                <!--a href="/Clientes/Detalhes/@cliente.Id">@cliente.Nome</a-->
+                @Html.ActionLink(cliente.Nome, "Detalhes", new { id = cliente.Id })
+            </td>
             <td>@cliente.Email</td>
         </tr>
     }

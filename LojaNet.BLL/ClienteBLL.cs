@@ -9,30 +9,49 @@ namespace LojaNet.BLL
     // Business Logic Layer
     public class ClienteBLL : IClienteDados
     {
+        private ClienteDAL dal;
+
+        public ClienteBLL()
+        {
+            this.dal = new ClienteDAL();
+        }
         public void Alterar(Cliente cliente)
         {
-            throw new NotImplementedException();
+            Validar(cliente);
+            if (string.IsNullOrEmpty(cliente.Id))
+            {
+                throw new Exception("O ID deve ser informado");
+            }
+            dal.Alterar(cliente);
         }
 
         public void Excluir(string Id)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(Id))
+            {
+                throw new Exception("O ID deve ser informado");
+            }
+            dal.Excluir(Id);
         }
 
         public void Incluir(Cliente cliente)
         {
-            if (string.IsNullOrEmpty(cliente.Nome))
-            {
-                throw new ApplicationException("O nome deve ser informado");
-            }
+            Validar(cliente);
             if (string.IsNullOrEmpty(cliente.Id))
             {
                 // Criando o ID dinamicamente
                 cliente.Id = Guid.NewGuid().ToString();
             }
 
-            var dal = new ClienteDAL();
             dal.Incluir(cliente);
+        }
+
+        private static void Validar(Cliente cliente)
+        {
+            if (string.IsNullOrEmpty(cliente.Nome))
+            {
+                throw new ApplicationException("O nome deve ser informado");
+            }
         }
 
         public Cliente ObterPorEmail(string Email)
@@ -42,13 +61,13 @@ namespace LojaNet.BLL
 
         public Cliente ObterPorId(string Id)
         {
-            throw new NotImplementedException();
+            return dal.ObterPorId(Id);
         }
 
         public List<Cliente> ObterTodos()
         {
-            var dall = new ClienteDAL();
-            return dall.ObterTodos();
+            var lista = dal.ObterTodos();
+            return lista;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 using LojaNet.Models;
 
@@ -10,12 +11,17 @@ namespace LojaNet.DAL
     {
         public void Alterar(Cliente cliente)
         {
-            throw new NotImplementedException();
+            DbHelper.ExecuteNonQuery("ClienteAlterar",
+                "@Id", cliente.Id,
+                "@Nome", cliente.Nome,
+                "@Email", cliente.Email,
+                "@Telefone", cliente.Telefone
+                );
         }
 
         public void Excluir(string Id)
         {
-            throw new NotImplementedException();
+            DbHelper.ExecuteNonQuery("ClienteExcluir", "@Id", Id);
         }
 
         public void Incluir(Cliente cliente)
@@ -35,7 +41,15 @@ namespace LojaNet.DAL
 
         public Cliente ObterPorId(string Id)
         {
-            throw new NotImplementedException();
+            Cliente cliente = null;
+            using (var reader = DbHelper.ExecuteReader("ClienteObterPorId", "@Id", Id))
+            {
+                if (reader.Read())
+                {
+                    cliente = ObterClienteReader(reader);
+                }
+            }
+            return cliente;
         }
 
         public List<Cliente> ObterTodos()
@@ -45,16 +59,22 @@ namespace LojaNet.DAL
             {
                 while (reader.Read())
                 {
-                    var cliente = new Cliente();
-                    cliente.Id = reader["Id"].ToString();
-                    cliente.Nome = reader["Nome"].ToString();
-                    cliente.Email = reader["Email"].ToString();
-                    cliente.Telefone = reader["Telefone"].ToString();
+                    Cliente cliente = ObterClienteReader(reader);
 
                     lista.Add(cliente);
                 }
             }
             return lista;
+        }
+
+        private static Cliente ObterClienteReader(IDataReader reader)
+        {
+            var cliente = new Cliente();
+            cliente.Id = reader["Id"].ToString();
+            cliente.Nome = reader["Nome"].ToString();
+            cliente.Email = reader["Email"].ToString();
+            cliente.Telefone = reader["Telefone"].ToString();
+            return cliente;
         }
     }
 }
